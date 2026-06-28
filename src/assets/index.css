@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: #0f172a;
+    color: #f1f5f9;
+  }
+}
+
+@layer utilities {
+  .card-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .input-field {
+    @apply w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition;
+  }
+  .btn-primary {
+    @apply w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 active:scale-95;
+  }
+  .btn-danger {
+    @apply bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/30 text-sm px-3 py-1.5 rounded-lg transition;
+  }
+  .btn-success {
+    @apply bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border border-emerald-500/30 text-sm px-3 py-1.5 rounded-lg transition;
+  }
+}

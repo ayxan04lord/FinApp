@@ -1,62 +1,95 @@
-import {Component} from "react";
-// import "./styles.css";
-import CardForm from "./Components/Task 3/Form";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Layout from './Components/Layout';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardHome from './pages/DashboardHome';
+import CardsPage from './pages/CardsPage';
+import ClientsPage from './pages/ClientsPage';
+import ContactPage from './pages/ContactPage';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: [
-        { number: "7653 7553 5693 9862", balance: 100 },
-        { number: "7453 9736 0763 3474", balance: 400 },
-        { number: "9577 7543 9379 9784", balance: 800 }
-      ]
-    };
-  }
-  handleCloseCard = (idx) => {
-    const clone = this.state.employees.filter(
-      (item)=> item.name !== idx
-   );
-this.setState({ employees: clone });
+function PrivateRoute({ children }) {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" replace />;
+}
 
-  };
+function PublicRoute({ children }) {
+  const { user } = useAuth();
+  return user ? <Navigate to="/dashboard" replace /> : children;
+}
 
-  handleOpenCard = (card) => {
-    // YOUR CODE HERE 2
-    console.log(card);
-  };
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-  render() {
-    return (
-      <div className="app">
-        <CardForm handleOpenCard={this.handleOpenCard} />
-        {this.state.cards.map(({ number, balance }) => (
-          <div key={number} className="card" style={{ width: "18rem" }}>
-            <div className="card-body">
-              <h5 className="card-title">
-                Карта <br />
-                {number}
-              </h5>
-              <div className="card-text">
-                <ul className="list-group">
-                  <li className="list-group-item">Баланс: {balance}</li>
-                  <hr />
-                  {this.state.employees.map((user, index) => (
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        }
+      />
 
-                  <button
-                  key={user.name}
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => this.handleCloseCard(index)}
-                  >
-                    Закрыть карту
-                  </button>))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <DashboardHome />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/cards"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <CardsPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/clients"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <ClientsPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/contact"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <ContactPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
 }
